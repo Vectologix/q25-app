@@ -7,6 +7,8 @@ import re
 from typing import Protocol
 
 _MESSAGES = {
+    "RETENTION_INVALID": "Inventaire de rétention invalide ou incomplet.",
+    "RETENTION_DOCUMENT_MISSING": "Candidat absent de la base synthétique.",
     "KEY_REFERENCE_INVALID": "Référence de clé invalide.",
     "KEYRING_CONSENT_REQUIRED": "Essai du coffre système non autorisé explicitement.",
     "KEYRING_UNAVAILABLE": "Coffre système indisponible ou accès refusé.",

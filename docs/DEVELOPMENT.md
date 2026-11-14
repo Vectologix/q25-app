@@ -49,11 +49,11 @@ que la wheel Linux CPython 3.12 vérifiée. Le marqueur de l'extra
 `cipher-prototype` dans pyproject.toml limite son profil d'installation ; utiliser
 le verrou avec hashes pour reproduire cet essai.
 
-Résultat du lot corpus persistés du 14 novembre 2026 : 194 tests découverts, 193 réussis
-avec SQLCipher et l'essai OS explicitement ignoré ; sans SQLCipher, 162 réussis
-et 32 ignorés. Les 14 nouveaux tests de persistance des corpus ne nécessitent aucun paquet.
+Résultat du lot inventaire de rétention du 14 novembre 2026 : 213 tests découverts, 212 réussis
+avec SQLCipher et l'essai OS explicitement ignoré ; sans SQLCipher, 174 réussis
+et 39 ignorés. Les 19 nouveaux tests de l’inventaire de rétention ne nécessitent aucun paquet.
 La preuve de coffre séparée du lot 2B2 reste acquise ; elle n'est pas réexécutée
-pour les corpus persistés.
+pour cet inventaire en lecture seule.
 Le script initial 001 demeure identique ; le schéma courant est 2. Aucun modèle téléchargé, aucun serveur
 démarré, aucune donnée réelle traitée.
 
@@ -107,3 +107,5 @@ Voir [PROVENANCE.md](PROVENANCE.md) pour les API, les conventions de positions
 et la revalidation des références après remplacement du corpus courant.
 
 Persistance et migration des corpus : [PERSISTENT_CORPORA.md](PERSISTENT_CORPORA.md).
+
+Inventaire préalable à la purge : [RETENTION_INVENTORY.md](RETENTION_INVENTORY.md).

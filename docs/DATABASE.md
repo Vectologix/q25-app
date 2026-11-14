@@ -153,3 +153,10 @@ La migration 002 ajoute les corpus, admissions et références de citations. Le
 script 001 reste inchangé. Voir [PERSISTENT_CORPORA.md](PERSISTENT_CORPORA.md)
 pour les API, copies 1/2 et limites du retrait logique. La section 2C1 ci-dessus
 décrit le socle initial en mémoire ; sa persistance est désormais réalisée en 2C2.
+
+## Inventaire préalable à la purge — 2C3A
+
+[RETENTION_INVENTORY.md](RETENTION_INVENTORY.md) décrit les comptages en lecture
+seule du schéma 2. Aucune migration supplémentaire : les admissions, citations,
+jobs et événements d'audit sont inventoriés sans modification ni lecture du texte
+source. Un résultat sans dépendance SQL n'autorise pas la suppression.

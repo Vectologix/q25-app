@@ -42,7 +42,9 @@ dossiers des deux dépôts n'est nécessaire à leur construction.
 - Corpus explicite et citations TXT en mémoire : révision et positions exactes,
   refus des extraits inventés ou hors corpus.
 - Corpus et références persistés, schéma 2, copies et restauration 1/2 vérifiées.
-- 193 tests ordinaires réussis avec SQLCipher ; essai OS ignoré par défaut.
+- Inventaire de rétention en lecture seule : dépendances SQL et périmètres
+  inconnus explicites, sans autorisation d’effacement.
+- 212 tests ordinaires réussis avec SQLCipher ; essai OS ignoré par défaut.
   La preuve de coffre séparée du 14 novembre reste consignée dans le lot 2B2.
 - Contrats de clés et liaison SQLCipher testés sur doubles ; preuve réelle du
   coffre Windows depuis WSL, clé fictive supprimée et politique Windows inchangée.
@@ -88,3 +90,5 @@ Ancrages de sources : voir [PROVENANCE.md](PROVENANCE.md), y compris la portée
 logique et la revalidation requise après remplacement du snapshot courant.
 
 Persistance : [corpus et citations](PERSISTENT_CORPORA.md), retrait logique ciblé.
+
+Rétention : [inventaire préalable](RETENTION_INVENTORY.md), sans exécuteur de purge.
