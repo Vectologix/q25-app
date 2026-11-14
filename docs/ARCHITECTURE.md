@@ -37,7 +37,9 @@ dossiers des deux dépôts n'est nécessaire à leur construction.
   sélection prudente avec réserves et repli sans LLM.
 - Extraction TXT UTF-8/BOM, hash et positions, migrations SQLite atomiques,
   tâches, audit minimal, sauvegarde/restauration vérifiées.
-- 105 tests au total ; dépendance SQLCipher facultative pour le prototype 2B1.
+- 126 tests découverts : 125 réussis avec SQLCipher, essai OS ignoré explicitement.
+- Contrats de clés et liaison SQLCipher testés sur doubles ; essai réel de coffre
+  non validé, lancement du helper refusé pour absence de signature PowerShell.
 
 Le prototype documentaire est réservé aux données synthétiques : SQLite standard
 en clair (2A) ou SQLCipher facultatif (2B1), dans des espaces temporaires de tests.

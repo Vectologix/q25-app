@@ -49,6 +49,33 @@ que la wheel Linux CPython 3.12 vérifiée. Le marqueur de l'extra
 `cipher-prototype` dans pyproject.toml limite son profil d'installation ; utiliser
 le verrou avec hashes pour reproduire cet essai.
 
-Résultat vérifié : 105 tests réussis avec le moteur ; sans le moteur, 83 réussis
-et 22 ignorés. Le schéma initial demeure identique. Aucun modèle téléchargé,
+Résultat du 14 novembre 2026 : avec le moteur, 125 tests réussis et un essai
+OS explicitement ignoré ; sans le moteur, 101 réussis et 25 ignorés. Le schéma initial demeure identique. Aucun modèle téléchargé,
 aucun serveur démarré, aucune donnée réelle traitée.
+
+## Fournisseur de clés de test — 2B2 en cours
+
+Les tests ordinaires n'utilisent jamais le coffre système. Un double uniquement
+présent dans les tests vérifie les références, l'isolation, les erreurs et la
+liaison réelle à SQLCipher. Aucun paquet supplémentaire n'est nécessaire.
+
+Le fournisseur `WindowsInteropKeyProvider` est un prototype WSL vers Windows
+Credential Manager, réservé à un `SyntheticWorkspace` et aux clés qu'il crée.
+Il exige `allow_system_store=True`. L'essai natif dans
+[tests/integration/test_os_keyring.py](../tests/integration/test_os_keyring.py)
+est désactivé par défaut ; `Q25_RUN_OS_KEYRING_TESTS=1` active cet essai seulement
+après accord explicite de création/relecture/suppression des clés fictives.
+
+État constaté : Windows refuse le helper PowerShell non signé depuis le chemin
+WSL avec `RemoteSigned`. Aucune clé OS créée ou suppression réelle validée.
+Le parseur PowerShell et la compilation C# ont été vérifiés sans appel de coffre.
+
+L'option `allow_unsigned_helper=True` ajoute `-ExecutionPolicy Bypass` uniquement
+au processus enfant, et reste désactivée par défaut. Son utilisation demande un
+accord distinct ; elle n'a pas été exécutée lors de cette livraison. Dans l'essai
+natif, elle correspond à `Q25_ALLOW_UNSIGNED_TEST_HELPER=1`. Aucun réglage permanent
+Windows ni paramètre de stratégie de groupe n'est modifié par cette option.
+
+Le lot coffre reste incomplet tant que l'essai natif et son nettoyage ne sont pas
+prouvés. Aucune prise en charge Windows native distribuée, Linux/macOS, récupération
+après crash ou usage de documents réels ne découle des tests sur doubles.

@@ -7,6 +7,14 @@ import re
 from typing import Protocol
 
 _MESSAGES = {
+    "KEY_REFERENCE_INVALID": "Référence de clé invalide.",
+    "KEYRING_CONSENT_REQUIRED": "Essai du coffre système non autorisé explicitement.",
+    "KEYRING_UNAVAILABLE": "Coffre système indisponible ou accès refusé.",
+    "KEYRING_CLOSED": "Session de coffre fermée.",
+    "KEYRING_FAILURE": "Opération de coffre impossible.",
+    "KEYRING_CLEANUP_FAILED": "Suppression des clés de test non confirmée.",
+    "KEY_NOT_FOUND": "Clé de test absente ou hors de cette session.",
+    "KEY_EXISTS": "Identifiant de clé déjà occupé ; aucun écrasement.",
     "CIPHER_UNAVAILABLE": "Moteur SQLCipher validé indisponible.",
     "CIPHER_KEY_REQUIRED": "Clé de chiffrement requise.",
     "CIPHER_KEY_INVALID": "Format de clé de chiffrement refusé.",

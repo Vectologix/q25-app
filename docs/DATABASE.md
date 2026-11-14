@@ -1,6 +1,6 @@
-# Persistance des prototypes synthétiques 2A et 2B1
+# Persistance des prototypes synthétiques 2A, 2B1 et préparation 2B2
 
-État au 13 novembre 2026 : deux adaptateurs réservés aux espaces synthétiques
+État au 14 novembre 2026 : deux adaptateurs réservés aux espaces synthétiques
 éphémères de tests : SQLite standard en clair (2A) et SQLCipher facultatif (2B1).
 Le prototype chiffré est vérifié sous WSL/Linux x86_64 avec Python 3.12 seulement.
 Aucun import réel ni stockage de production autorisé.
@@ -110,9 +110,23 @@ copie/restauration avec clés distinctes. Ils ne valident pas un stockage produi
 Voir [l'environnement de développement](DEVELOPMENT.md) et
 [les dépendances](DEPENDENCIES.md). La gestion des clés OS reste à réaliser.
 
+## Références de clés — préparation 2B2
+
+`q25.core.keys` définit le contrat `KeyProvider` et les références techniques.
+`q25.persistence.keyed` relie ces références aux ouvertures et copies SQLCipher.
+Une clé manquante ou un fournisseur défaillant fait échouer l'opération ; aucune
+clé n'est régénérée automatiquement pour ouvrir une base existante.
+
+Les références étrangères à la session sont refusées par le prototype de coffre
+Windows. Les opérations de la session ne peuvent ni énumérer les autres entrées
+ni adopter un secret préexistant. Le helper gère un nettoyage borné de ses entrées
+et signale un nettoyage non confirmé. L'essai réel reste à valider : le lancement
+est actuellement refusé pour signature PowerShell absente, sans clé OS créée.
+Voir [les conditions de l'essai](DEVELOPMENT.md#fournisseur-de-clés-de-test--2b2-en-cours).
+
 ## Limites
 
-Pas de coffre de clés OS, FTS5/RAG, rétention de production, reprise automatique
+Pas de coffre OS réellement validé, FTS5/RAG, rétention de production, reprise automatique
 après crash ou orchestration asynchrone. L'annulation est coopérative aux
 frontières d'opérations ; elle n'interrompt pas une lecture ou instruction SQL
 déjà en cours. Les tests locaux ne valident pas le packaging Windows/macOS natif.
