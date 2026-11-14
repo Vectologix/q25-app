@@ -1,0 +1,1 @@
+"""Contrôles d'intégration locaux."""

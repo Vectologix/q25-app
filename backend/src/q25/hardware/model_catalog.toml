@@ -1,0 +1,27 @@
+# Candidats issus du cahier v0.1 : aucune compatibilité ni empreinte prouvée.
+# Les champs inconnus sont volontairement absents, sans URL ni hash inventé.
+schema_version = 1
+
+[[profiles]]
+id = "embeddinggemma-2-candidate"
+model = "EmbeddingGemma 2 (référence du cahier, à vérifier)"
+role = "embedding"
+status = "unverified"
+
+[[profiles]]
+id = "gemma-4-e4b-candidate"
+model = "Gemma 4 E4B (référence du cahier, à vérifier)"
+role = "llm"
+status = "unverified"
+
+[[profiles]]
+id = "gemma-4-12b-candidate"
+model = "Gemma 4 12B (référence du cahier, à vérifier)"
+role = "llm"
+status = "unverified"
+
+[[profiles]]
+id = "gemma-4-26b-a4b-candidate"
+model = "Gemma 4 26B A4B (référence du cahier, à vérifier)"
+role = "llm"
+status = "unverified"

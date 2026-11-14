@@ -1,0 +1,105 @@
+# Persistance du prototype synthétique 2A
+
+État au 13 novembre 2026 : SQLite de la bibliothèque standard, **en clair**,
+uniquement dans une capacité `SyntheticWorkspace` éphémère de tests. Aucune
+base de production, aucun chiffrement implémenté et aucun import réel autorisé.
+
+## Ouverture et cycle de vie
+
+`open_database()` sans capacité synthétique échoue avec `ENCRYPTION_REQUIRED`
+avant de créer un fichier, même si l'appelant fournit un chemin. Une capacité
+provient uniquement d'un nouveau répertoire temporaire, jamais d'un dossier
+existant à adopter. Elle impose des fichiers plats dans sa racine, refuse les
+liens symboliques et les sorties de périmètre, et ferme les connexions avant
+nettoyage. Les fixtures et nouveaux fichiers sont créés exclusivement, sans
+écrasement, avec permissions POSIX demandées `0600` (répertoire temporaire `0700`).
+
+Les tests utilisent `:memory:` ou un fichier temporaire WAL. Chaque connexion
+active les clés étrangères, un délai de verrou de 200 ms, les temporaires en
+mémoire, `trusted_schema=OFF` et désactive le chargement d'extensions si disponible.
+Le choix WAL intervient après vérification/application des migrations ; une base
+de version future ou sans historique reconnu est refusée avant cette mutation.
+
+## Schéma version 1
+
+| Table | Contenu |
+| --- | --- |
+| `schema_migrations` | Version et SHA256 du script appliqué. |
+| `documents` | Identifiant technique, SHA256 source, taille en octets, présence du BOM, format et date. |
+| `document_elements` | Texte par segment, ordre, offsets caractères et octets, référence au document. |
+| `jobs` | Identifiant de tâche, état technique, document éventuel, code d'erreur neutre et dates. |
+| `audit_events` | Séquence, tâche, type d'événement fermé et date ; aucun contenu ni chemin. |
+
+Le texte n'est pas dupliqué dans `documents`, les tâches ou l'audit. Aucun nom de
+fichier, chemin absolu ou original brut n'est conservé dans ces tables. Les
+requêtes de données sont paramétrées. Les clés étrangères et contraintes SQL
+contrôlent références, offsets, tailles et combinaisons d'états de tâche.
+
+Les états techniques sont `waiting`, `running`, `completed`, `failed` et
+`cancelled`. Ils ne signifient ni document anonymisé ni autorisation d'envoi.
+Une tâche et son démarrage sont journalisés avant extraction ; document,
+segments, succès et événement final sont ensuite enregistrés atomiquement.
+Une erreur ou annulation annule cette transaction et inscrit un état terminal
+neutre dans une transaction distincte. Si celle-ci est elle-même bloquée, l'erreur
+est remontée ; aucun état terminal persistant fictif n'est annoncé.
+
+L'audit interdit les mises à jour/suppressions via déclencheurs. Cette protection
+est logique : elle ne protège pas contre un acteur modifiant directement le
+fichier, les schémas ou l'ensemble des données et de leurs empreintes.
+
+## Migrations et intégrité
+
+Le [script initial](../backend/src/q25/persistence/migrations/001_initial.sql)
+est un fichier local contrôlé par le projet. Les migrations sont contiguës,
+bornées à 256 Kio par script et appliquées dans une transaction explicite.
+Une migration historique modifiée ou une version future est refusée ; une
+initialisation ou montée de version en échec revient intégralement en arrière.
+
+Le moteur n'utilise pas `executescript`, qui pourrait changer les frontières de
+transaction. Les instructions complètes sont exécutées individuellement ; un
+authorizer interdit contrôle de transaction, ATTACH/DETACH, PRAGMA et chargement
+d'extensions dans le script. Le contenu d'un TXT n'est jamais du SQL à exécuter.
+
+## Provenance TXT
+
+- Lecture binaire bornée à 5 Mio par défaut, UTF-8 strict, BOM UTF-8 facultatif.
+- Accents, caractères combinés, LF/CRLF et contenu conservés sans normalisation.
+- Segments d'au plus 65 536 points de code, pour borner le nombre d'objets même
+  avec beaucoup de lignes vides. Ils peuvent couper une ligne ou un groupe de
+  caractères visuels ; leur texte et leurs positions restent exacts.
+- Offsets zéro-indexés, début inclus et fin exclue ; `start/end` en points de
+  code Python, `byte_start/byte_end` en octets UTF-8 de l'original.
+- Le BOM n'appartient pas au texte extrait : le premier offset octet vaut 3
+  s'il est présent. Un fichier vide ou contenant uniquement le BOM n'a aucun segment.
+- Les contrats et relectures reconstruisent octets/BOM, taille et SHA256 pour
+  vérifier la continuité des segments et la cohérence avec la source.
+
+L'extracteur rejette UTF-8 invalide, NUL et signatures manifestes d'autres formats.
+Ce profil strict ne constitue pas une détection universelle de format/MIME.
+
+## Sauvegarde et restauration
+
+L'API SQLite `Connection.backup` copie l'instantané cohérent d'une transaction
+de lecture, y compris les données validées du WAL, vers un nouveau fichier du
+même espace synthétique. Aucun fichier préexistant n'est écrasé ; une transaction
+déjà active sur la connexion source interdit la sauvegarde.
+
+Source et copie sont vérifiées : historique/version, tables/déclencheurs attendus,
+`integrity_check`, clés étrangères, documents/provenance et états de tâche.
+Les lignes copiées sont comparées à l'instantané source. Cela détecte des
+incohérences ; cela n'authentifie pas une sauvegarde contre une falsification complète.
+
+La restauration ouvre la source en lecture seule et valide avant de créer la
+destination. Un échec retire uniquement le nouveau fichier créé par la copie.
+Le délai de copie par défaut est 2 s, avec contrôle de progression et attente
+bornée sur verrou ; il ne constitue pas une limite globale des vérifications
+sémantiques ni une garantie de performance sur de grandes bases.
+
+## Limites
+
+Pas de chiffrement, clé, FTS5/RAG, rétention de production, reprise automatique
+après crash ou orchestration asynchrone. L'annulation est coopérative aux
+frontières d'opérations ; elle n'interrompt pas une lecture ou instruction SQL
+déjà en cours. Les tests locaux ne valident pas le packaging Windows/macOS natif.
+
+Voir [SECURITY.md](SECURITY.md) pour les limites de confidentialité et le lot 2B.

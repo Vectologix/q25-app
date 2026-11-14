@@ -1,0 +1,17 @@
+/* Q25 — tokens visuels, v1.0. Le kit est la source de vérité. */
+:root {
+  --q25-navy: #0B1F3B;
+  --q25-navy-dark: #06172E;
+  --q25-blue: #2F7FFF;
+  --q25-blue-sky: #65AEFF;
+  --q25-mint: #17C3A3;
+  --q25-mint-bright: #37E3CC;
+  --q25-surface: #F5F9FF;
+  --q25-white: #FFFFFF;
+  --q25-text: #0B1F3B;
+  --q25-text-muted: #53657B;
+  --q25-radius-card: 16px;
+  --q25-radius-button: 12px;
+  --q25-font: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --q25-gradient-action: linear-gradient(110deg,#2F7FFF 0%,#06BFAE 100%);
+}

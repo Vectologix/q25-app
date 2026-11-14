@@ -1,0 +1,20 @@
+{
+  "name": "Q25",
+  "short_name": "Q25",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B1F3B",
+  "theme_color": "#0B1F3B",
+  "icons": [
+    {
+      "src": "/favicon/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

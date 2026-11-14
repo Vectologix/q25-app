@@ -1,0 +1,1 @@
+"""Contrats indépendants des fournisseurs."""

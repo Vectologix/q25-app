@@ -1,0 +1,86 @@
+# Secrets et configurations privées ; exemples expurgés autorisés.
+.env
+.env.*
+!.env.example
+.envrc
+/.aws/
+/credentials/
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Documents et sorties de travail locaux ; corpus synthétiques dans tests/.
+/data/
+/private/
+/originals/
+/imports/
+/exports/
+/reports/
+/uploads/
+/workspaces/
+/tmp/
+/temp/
+
+# Bases, sauvegardes et journaux sensibles, y compris SQLite WAL/SHM.
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+*.bak
+*.log
+logs/
+
+# Poids de modèles et caches d'inférence.
+models/
+model_cache/
+*.gguf
+*.ggml
+*.safetensors
+*.onnx
+*.pt
+*.pth
+*.ckpt
+.cache/
+
+# Python et outils de qualité.
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+coverage/
+
+# Interface et packaging ; conserver manifestes et fichiers de verrouillage.
+node_modules/
+dist/
+build/
+target/
+.vite/
+playwright-report/
+test-results/
+
+# Fichiers locaux du système et de l'éditeur.
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+
+# Documents internes et sauvegardes locales : jamais publier.
+/.private/
+/AGENTS.md
+/AGENTS/
+/plans/
+/PROJECT_SPEC.md
+/Q25_brand_kit.zip
+/*.code-workspace

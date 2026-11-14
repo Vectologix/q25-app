@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 220" role="img" aria-label="Q25">
+<defs>
+  <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox"><stop offset="0" stop-color="#5CBEFF"/><stop offset="1" stop-color="#65A8FD"/></linearGradient>
+  <linearGradient id="mint" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox"><stop offset="0" stop-color="#3CEBD0"/><stop offset="1" stop-color="#05BFB5"/></linearGradient>
+  <linearGradient id="iconBg" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox"><stop offset="0" stop-color="#1265CD"/><stop offset="0.32" stop-color="#0B3A78"/><stop offset="1" stop-color="#06172E"/></linearGradient>
+  <linearGradient id="skyLight" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox"><stop offset="0" stop-color="#397FF5"/><stop offset="1" stop-color="#2072E7"/></linearGradient>
+  <linearGradient id="mintLight" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox"><stop offset="0" stop-color="#05C7AC"/><stop offset="1" stop-color="#0BA997"/></linearGradient>
+</defs>
+<g fill-rule="evenodd" clip-rule="evenodd">
+  <path d="M 113,8 A 97,97 0 1,1 113,202 A 97,97 0 1,1 113,8 Z M 113,48 A 57,57 0 1,0 113,162 A 57,57 0 1,0 113,48 Z" fill="#FFFFFF"/>
+  <path d="M373,16 L361,107 L387,117 L395,111 L408,106 L420,106 L427,108 L434,112 L441,120 L444,128 L444,137 L438,150 L431,156 L424,159 L407,160 L400,158 L390,152 L380,142 L353,163 L360,173 L370,182 L391,192 L420,195 L448,188 L462,179 L469,172 L479,155 L483,138 L483,125 L480,111 L471,95 L454,81 L430,74 L414,75 L400,80 L400,70 L404,49 L472,49 L473,16 Z M252,19 L234,32 L226,43 L221,54 L253,69 L258,59 L265,52 L279,47 L288,48 L295,51 L301,57 L304,64 L304,73 L300,84 L288,99 L223,160 L223,191 L344,191 L344,157 L276,156 L312,124 L335,98 L343,77 L343,56 L337,40 L321,23 L299,14 L272,13 Z" fill="url(#sky)"/>
+  <path d="M 100,132 L 145,131 C 154,131 160,134 165,140 L 220,205 L 191,207 C 180,208 171,207 165,202 Z" fill="url(#mint)"/>
+</g>
+</svg>
