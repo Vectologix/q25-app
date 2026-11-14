@@ -65,7 +65,7 @@ class DocumentRepository:
         self.database.ensure_open()
         try:
             return read_document(self.database.connection, document_id)
-        except sqlite3.Error:
+        except self.database.error_types:
             raise BackendError("STORAGE_FAILURE") from None
 
     def put_document(self, document: ExtractedDocument, cancelled: Callable[[], bool]):
@@ -114,5 +114,5 @@ class DocumentRepository:
             if row is None:
                 raise BackendError("JOB_STATE")
             return JobResult(*row)
-        except sqlite3.Error:
+        except self.database.error_types:
             raise BackendError("STORAGE_FAILURE") from None

@@ -42,7 +42,8 @@ def _validate_list(migrations):
         raise BackendError("MIGRATION_INVALID")
 
 
-def verify_history(connection: sqlite3.Connection, migrations: tuple[Migration, ...], *, current=False) -> int:
+def verify_history(connection: sqlite3.Connection, migrations: tuple[Migration, ...], *,
+                   current=False, errors=(sqlite3.Error,)) -> int:
     _validate_list(migrations)
     try:
         version = connection.execute("PRAGMA user_version").fetchone()[0]
@@ -58,7 +59,7 @@ def verify_history(connection: sqlite3.Connection, migrations: tuple[Migration, 
         if history != expected:
             raise BackendError("MIGRATION_HISTORY")
         return version
-    except sqlite3.Error:
+    except errors:
         raise BackendError("MIGRATION_INVALID") from None
 
 
@@ -82,11 +83,12 @@ def _migration_authorizer(action, first, second, *_):
     return sqlite3.SQLITE_OK
 
 
-def migrate(connection: sqlite3.Connection, migrations: tuple[Migration, ...] | None = None):
+def migrate(connection: sqlite3.Connection, migrations: tuple[Migration, ...] | None = None,
+            *, errors=(sqlite3.Error,)):
     migrations = default_migrations() if migrations is None else migrations
     if connection.in_transaction:
         raise BackendError("TRANSACTION_ACTIVE")
-    version = verify_history(connection, migrations)
+    version = verify_history(connection, migrations, errors=errors)
     if version == len(migrations):
         return
     try:
@@ -106,6 +108,6 @@ def migrate(connection: sqlite3.Connection, migrations: tuple[Migration, ...] | 
         connection.set_authorizer(None)
         if connection.in_transaction:
             connection.rollback()
-        if isinstance(error, sqlite3.Error):
+        if isinstance(error, errors):
             raise BackendError("MIGRATION_INVALID") from None
         raise

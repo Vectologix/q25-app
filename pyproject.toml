@@ -5,3 +5,8 @@ description = "Fondations locales de Q25"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = []
+
+[project.optional-dependencies]
+cipher-prototype = [
+    "sqlcipher3-binary==0.6.0; sys_platform == 'linux' and platform_machine == 'x86_64' and python_version == '3.12'",
+]

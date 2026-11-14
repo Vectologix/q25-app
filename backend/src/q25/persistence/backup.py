@@ -20,10 +20,10 @@ def _validate_timeout(timeout: float):
         raise ValueError("Délai de copie fini et positif requis.")
 
 
-def validate_database(connection: sqlite3.Connection):
+def validate_database(connection: sqlite3.Connection, *, errors=(sqlite3.Error,)):
     """Contrôles structurels et sémantiques ; aucune preuve cryptographique d'authenticité."""
     try:
-        verify_history(connection, default_migrations(), current=True)
+        verify_history(connection, default_migrations(), current=True, errors=errors)
         tables = {r[0] for r in connection.execute("SELECT name FROM sqlite_master WHERE type='table'")}
         triggers = {r[0] for r in connection.execute("SELECT name FROM sqlite_master WHERE type='trigger'")}
         if tables != _TABLES or triggers != _TRIGGERS:
@@ -36,7 +36,7 @@ def validate_database(connection: sqlite3.Connection):
             read_document(connection, document_id)
         for row in connection.execute("SELECT id,state,document_id,error_code FROM jobs"):
             JobResult(*row)
-    except (sqlite3.Error, BackendError, ValueError, TypeError):
+    except errors + (BackendError, ValueError, TypeError):
         raise BackendError("BACKUP_INVALID") from None
 
 
@@ -87,6 +87,8 @@ def _new_copy(source: sqlite3.Connection, destination: Path, workspace: Syntheti
 
 def backup_database(database: Database, destination: Path, *, timeout: float = 2.0) -> Path:
     database.ensure_open()
+    if database.capabilities.encrypted_at_rest:
+        raise BackendError("ENCRYPTED_COPY_REQUIRED")
     _validate_timeout(timeout)
     if database.connection.in_transaction:
         raise BackendError("TRANSACTION_ACTIVE")

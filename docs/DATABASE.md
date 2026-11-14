@@ -1,8 +1,9 @@
-# Persistance du prototype synthétique 2A
+# Persistance des prototypes synthétiques 2A et 2B1
 
-État au 13 novembre 2026 : SQLite de la bibliothèque standard, **en clair**,
-uniquement dans une capacité `SyntheticWorkspace` éphémère de tests. Aucune
-base de production, aucun chiffrement implémenté et aucun import réel autorisé.
+État au 13 novembre 2026 : deux adaptateurs réservés aux espaces synthétiques
+éphémères de tests : SQLite standard en clair (2A) et SQLCipher facultatif (2B1).
+Le prototype chiffré est vérifié sous WSL/Linux x86_64 avec Python 3.12 seulement.
+Aucun import réel ni stockage de production autorisé.
 
 ## Ouverture et cycle de vie
 
@@ -95,12 +96,26 @@ Le délai de copie par défaut est 2 s, avec contrôle de progression et attente
 bornée sur verrou ; il ne constitue pas une limite globale des vérifications
 sémantiques ni une garantie de performance sur de grandes bases.
 
+## Adaptateur SQLCipher facultatif — 2B1
+
+`q25.persistence.cipher` expose `open_encrypted_database`,
+`backup_encrypted_database` et `restore_encrypted_database`. Ces API exigent
+un espace synthétique et des clés brutes de 32 octets fournies en mémoire par
+le harnais. Elles réutilisent le schéma et l'ingestion TXT précédents.
+La sauvegarde classique refuse une base chiffrée ; chaque copie chiffrée exige
+une clé explicite. Aucun moteur en clair ne remplace un SQLCipher indisponible.
+
+Les tests couvrent réouverture, mauvaises clés, corruption, migrations, WAL et
+copie/restauration avec clés distinctes. Ils ne valident pas un stockage produit.
+Voir [l'environnement de développement](DEVELOPMENT.md) et
+[les dépendances](DEPENDENCIES.md). La gestion des clés OS reste à réaliser.
+
 ## Limites
 
-Pas de chiffrement, clé, FTS5/RAG, rétention de production, reprise automatique
+Pas de coffre de clés OS, FTS5/RAG, rétention de production, reprise automatique
 après crash ou orchestration asynchrone. L'annulation est coopérative aux
 frontières d'opérations ; elle n'interrompt pas une lecture ou instruction SQL
 déjà en cours. Les tests locaux ne valident pas le packaging Windows/macOS natif.
 
-Le prototype est réservé aux données fictives ; le chiffrement relève du lot 2B.
+Le prototype reste réservé aux données fictives ; le lot 2B complet reste partiel.
 Voir la [politique de sécurité](../SECURITY.md) pour les signalements.

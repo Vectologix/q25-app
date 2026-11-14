@@ -37,10 +37,11 @@ dossiers des deux dépôts n'est nécessaire à leur construction.
   sélection prudente avec réserves et repli sans LLM.
 - Extraction TXT UTF-8/BOM, hash et positions, migrations SQLite atomiques,
   tâches, audit minimal, sauvegarde/restauration vérifiées.
-- 79 tests au total ; bibliothèque standard Python uniquement.
+- 105 tests au total ; dépendance SQLCipher facultative pour le prototype 2B1.
 
-Le prototype documentaire est réservé aux données synthétiques et utilise un
-stockage temporaire en clair. L'ouverture normale est refusée sans chiffrement.
+Le prototype documentaire est réservé aux données synthétiques : SQLite standard
+en clair (2A) ou SQLCipher facultatif (2B1), dans des espaces temporaires de tests.
+L'ouverture produit reste refusée ; coffre de clés OS et packaging restent à prouver.
 Ni interface, ni détection PII, ni anonymisation, ni chargement de modèle ne sont
 encore livrés. Voir [DATABASE.md](DATABASE.md), [politique de sécurité](../SECURITY.md),
 [MODEL_COMPATIBILITY.md](MODEL_COMPATIBILITY.md) et [BENCHMARKS.md](BENCHMARKS.md).

@@ -23,6 +23,7 @@ def configure(connection: sqlite3.Connection):
 
 
 class Database:
+    error_types = (sqlite3.Error,)
     capabilities = StorageCapabilities(encrypted_at_rest=False, synthetic_only=True)
 
     def __init__(self, connection: sqlite3.Connection, workspace: SyntheticWorkspace, path: Path | None):
@@ -60,7 +61,7 @@ class Database:
         except BaseException as error:
             if self.connection.in_transaction:
                 self.connection.rollback()
-            if isinstance(error, sqlite3.Error):
+            if isinstance(error, self.error_types):
                 raise BackendError("STORAGE_FAILURE") from None
             raise
 

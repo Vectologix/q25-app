@@ -1,0 +1,4 @@
+# Prototype uniquement : CPython 3.12, Linux x86_64 (WSL inclus).
+# Les autres plateformes et versions Python ne sont pas validées.
+sqlcipher3-binary==0.6.0 \
+    --hash=sha256:c8a7076a18b4f6fc9b580b0f24aa526d6a47605b1e3e6491ee3e9f2977940d8e

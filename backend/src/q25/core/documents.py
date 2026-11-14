@@ -7,6 +7,11 @@ import re
 from typing import Protocol
 
 _MESSAGES = {
+    "CIPHER_UNAVAILABLE": "Moteur SQLCipher validé indisponible.",
+    "CIPHER_KEY_REQUIRED": "Clé de chiffrement requise.",
+    "CIPHER_KEY_INVALID": "Format de clé de chiffrement refusé.",
+    "CIPHER_INVALID": "Base chiffrée ou clé invalide.",
+    "ENCRYPTED_COPY_REQUIRED": "Utiliser la sauvegarde chiffrée avec une clé explicite.",
     "ENCRYPTION_REQUIRED": "Ouverture normale refusée : chiffrement non disponible.",
     "WORKSPACE_CLOSED": "Espace synthétique fermé ou non ouvert.",
     "PATH_INVALID": "Chemin refusé hors du périmètre synthétique.",
