@@ -46,7 +46,9 @@ dossiers des deux dépôts n'est nécessaire à leur construction.
   inconnus explicites, sans autorisation d’effacement.
 - Purge manuelle de fixtures avec confirmation liée à une prévisualisation,
   transaction atomique et audit technique conservé ; schéma courant 3.
-- 233 tests ordinaires réussis avec SQLCipher ; essai OS ignoré par défaut.
+- Copies gérées de session : contrôle de l’historique de purge avant restauration
+  et suppression manuelle limitée aux copies possédées.
+- 253 tests ordinaires réussis avec SQLCipher ; essai OS ignoré par défaut.
   La preuve de coffre séparée du 14 novembre reste consignée dans le lot 2B2.
 - Contrats de clés et liaison SQLCipher testés sur doubles ; preuve réelle du
   coffre Windows depuis WSL, clé fictive supprimée et politique Windows inchangée.
@@ -96,3 +98,5 @@ Persistance : [corpus et citations](PERSISTENT_CORPORA.md), retrait logique cibl
 Rétention : [inventaire préalable](RETENTION_INVENTORY.md), sans exécuteur de purge.
 
 Retrait des sources : [purge manuelle](MANUAL_PURGE.md), limitée à la base courante.
+
+Copies gérées : [contrôles et limites](MANAGED_BACKUPS.md).

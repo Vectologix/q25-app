@@ -7,6 +7,9 @@ import re
 from typing import Protocol
 
 _MESSAGES = {
+    "MANAGED_BACKUP_INVALID": "Copie gérée absente, altérée ou hors de cette session.",
+    "MANAGED_BACKUP_CONFIRMATION": "Confirmation de suppression de copie requise.",
+    "MANAGED_BACKUP_STALE": "La copie ne correspond pas à l'historique de purge courant.",
     "PURGE_CONFIRMATION": "Confirmation de purge absente, différente ou déjà consommée.",
     "PURGE_BLOCKED": "Source encore référencée ou état incompatible avec la purge.",
     "PURGE_CHANGED": "État différent de la prévisualisation ; préparer de nouveau.",

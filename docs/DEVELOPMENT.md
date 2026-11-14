@@ -49,11 +49,11 @@ que la wheel Linux CPython 3.12 vérifiée. Le marqueur de l'extra
 `cipher-prototype` dans pyproject.toml limite son profil d'installation ; utiliser
 le verrou avec hashes pour reproduire cet essai.
 
-Résultat du lot purge manuelle du 14 novembre 2026 : 234 tests découverts, 233 réussis
-avec SQLCipher et l'essai OS explicitement ignoré ; sans SQLCipher, 185 réussis
-et 49 ignorés. Les 21 nouveaux tests de purge manuelle ne nécessitent aucun paquet.
+Résultat du lot copies gérées du 14 novembre 2026 : 254 tests découverts, 253 réussis
+avec SQLCipher et l'essai OS explicitement ignoré ; sans SQLCipher, 195 réussis
+et 59 ignorés. Les 20 nouveaux tests de copies gérées ne nécessitent aucun paquet.
 La preuve de coffre séparée du lot 2B2 reste acquise ; elle n'est pas réexécutée
-pour cette purge de fixtures.
+pour les copies gérées.
 Les scripts 001/002 demeurent identiques ; le schéma courant est 3. Aucun modèle téléchargé, aucun serveur
 démarré, aucune donnée réelle traitée.
 
@@ -111,3 +111,5 @@ Persistance et migration des corpus : [PERSISTENT_CORPORA.md](PERSISTENT_CORPORA
 Inventaire préalable à la purge : [RETENTION_INVENTORY.md](RETENTION_INVENTORY.md).
 
 Purge manuelle confirmée : [MANUAL_PURGE.md](MANUAL_PURGE.md).
+
+Copies de session : [MANAGED_BACKUPS.md](MANAGED_BACKUPS.md).

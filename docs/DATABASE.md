@@ -167,3 +167,10 @@ Le [lot 2C3B](MANUAL_PURGE.md) ajoute source_purged aux jobs, le code technique
 DOCUMENT_PURGED et purge_operations. Les scripts 001/002 restent inchangés.
 Copies/restaurations 1/2/3 vérifiées ; aucune garantie d'effacement physique.
 Les sections de schéma 1 et 2 ci-dessus décrivent les étapes historiques.
+
+## Copies de session après purge
+
+Le [service de copies gérées](MANAGED_BACKUPS.md) réutilise les copies bas niveau
+et refuse la restauration d'une copie ne correspondant pas à l'historique de
+purge courant. Registre en mémoire seulement, aucune migration supplémentaire.
+Les APIs bas niveau et copies externes gardent leurs limites précédentes.
