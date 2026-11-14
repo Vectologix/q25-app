@@ -102,4 +102,5 @@ après crash ou orchestration asynchrone. L'annulation est coopérative aux
 frontières d'opérations ; elle n'interrompt pas une lecture ou instruction SQL
 déjà en cours. Les tests locaux ne valident pas le packaging Windows/macOS natif.
 
-Voir [SECURITY.md](SECURITY.md) pour les limites de confidentialité et le lot 2B.
+Le prototype est réservé aux données fictives ; le chiffrement relève du lot 2B.
+Voir la [politique de sécurité](../SECURITY.md) pour les signalements.

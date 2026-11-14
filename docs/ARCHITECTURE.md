@@ -42,7 +42,7 @@ dossiers des deux dépôts n'est nécessaire à leur construction.
 Le prototype documentaire est réservé aux données synthétiques et utilise un
 stockage temporaire en clair. L'ouverture normale est refusée sans chiffrement.
 Ni interface, ni détection PII, ni anonymisation, ni chargement de modèle ne sont
-encore livrés. Voir [DATABASE.md](DATABASE.md), [SECURITY.md](SECURITY.md),
+encore livrés. Voir [DATABASE.md](DATABASE.md), [politique de sécurité](../SECURITY.md),
 [MODEL_COMPATIBILITY.md](MODEL_COMPATIBILITY.md) et [BENCHMARKS.md](BENCHMARKS.md).
 
 ## Invariants
