@@ -49,9 +49,11 @@ que la wheel Linux CPython 3.12 vérifiée. Le marqueur de l'extra
 `cipher-prototype` dans pyproject.toml limite son profil d'installation ; utiliser
 le verrou avec hashes pour reproduire cet essai.
 
-Résultat du 14 novembre 2026 : avec le moteur, 125 tests réussis et un essai
-OS explicitement ignoré par défaut ; sans le moteur, 101 réussis et 25 ignorés.
-L'essai OS séparé a aussi réussi : 126 tests distincts validés au total.
+Résultat du lot mémoire du 14 novembre 2026 : 156 tests découverts, 155 réussis
+avec SQLCipher et l'essai OS explicitement ignoré ; sans SQLCipher, 131 réussis
+et 25 ignorés. Les 30 nouveaux tests du MemoryPlanner ne nécessitent aucun paquet.
+La preuve de coffre séparée du lot 2B2 reste acquise ; elle n'est pas réexécutée
+pour un changement du planificateur pur.
 Le schéma initial demeure identique. Aucun modèle téléchargé, aucun serveur
 démarré, aucune donnée réelle traitée.
 
@@ -84,3 +86,13 @@ Le lot 2B2 est vérifié pour cette preuve synthétique WSL vers Windows. Le tes
 reste opt-in et son exception de processus reste désactivée par défaut. Cette
 preuve ne valide pas un exécutable Windows distribué, les coffres Linux/macOS,
 la récupération après crash, la rotation ou un stockage de production.
+
+## Tests ciblés de mémoire et contexte
+
+```bash
+TMPDIR="$PWD/.private/tmp" PYTHONPATH=backend/src .venv/bin/python -m unittest tests.unit.test_memory tests.integration.test_memory_pipeline -v
+```
+
+Voir [les contrats et limites du MemoryPlanner](MEMORY_PLANNER.md). Les sondes de
+ce test d'intégration sont simulées ; aucun modèle, benchmark ou GPU réel n'est
+validé par cette commande.

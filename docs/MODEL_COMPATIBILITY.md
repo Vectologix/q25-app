@@ -52,3 +52,14 @@ Le choix d'un profil ne garantit ni le chargement, ni une vitesse, ni une qualit
 de détection. Il faudra recontrôler les ressources avant tout futur chargement.
 Les mesures sont ponctuelles, sans réservation de mémoire ni gestionnaire OOM
 de runtime à cette étape. Aucune sélection ne certifie une anonymisation.
+
+## Planification par tâche — lot 1B
+
+Le [MemoryPlanner](MEMORY_PLANNER.md) applique le budget de tokens et la préférence
+par tâche aux profils de contexte exacts du schéma 1. Il réutilise les budgets,
+inconnues et preuves de cette étape ; aucun profil ci-dessus n'est devenu vérifié.
+Plusieurs contextes d'un même artefact nécessitent leurs profils/mesures propres ;
+aucune mémoire d'un autre contexte ou KV quantifié n'est inventée par interpolation.
+Les alternatives à une même fenêtre ne sont pas classées en qualité ou vitesse.
+Le runtime, le tokenizer, le recontrôle matériel avant chargement et les OOM réels
+restent à valider dans les lots suivants.

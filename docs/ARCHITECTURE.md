@@ -37,8 +37,10 @@ dossiers des deux dépôts n'est nécessaire à leur construction.
   sélection prudente avec réserves et repli sans LLM.
 - Extraction TXT UTF-8/BOM, hash et positions, migrations SQLite atomiques,
   tâches, audit minimal, sauvegarde/restauration vérifiées.
-- 125 tests ordinaires réussis avec SQLCipher ; un essai OS séparé réussi,
-  toujours ignoré par défaut (126 tests distincts validés).
+- MemoryPlanner par tâche : contextes et budgets de génération contrôlés sur
+  profils synthétiques, sans téléchargement ou chargement de modèle.
+- 155 tests ordinaires réussis avec SQLCipher ; essai OS ignoré par défaut.
+  La preuve de coffre séparée du 14 novembre reste consignée dans le lot 2B2.
 - Contrats de clés et liaison SQLCipher testés sur doubles ; preuve réelle du
   coffre Windows depuis WSL, clé fictive supprimée et politique Windows inchangée.
 
@@ -71,6 +73,9 @@ PYTHONPATH=backend/src python3 -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
 API Python : `q25.hardware.probe`, `q25.hardware.catalog`,
-`q25.hardware.selection`, `q25.app.ingestion` et `q25.persistence`.
+`q25.hardware.selection`, `q25.hardware.memory`, `q25.app.ingestion` et `q25.persistence`.
 Les tests d'intégration montrent les usages synthétiques. Le packaging et les
 applications web/desktop nécessitent encore des étapes distinctes.
+
+Planification du contexte : voir [MEMORY_PLANNER.md](MEMORY_PLANNER.md). La sélection
+pure ne réserve pas la mémoire et ne remplace pas un futur chargement mesuré.
