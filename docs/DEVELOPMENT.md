@@ -1,5 +1,25 @@
 # Développement du backend
 
+## Espace de travail local
+
+Les deux dépôts peuvent être regroupés dans un dossier commun sans dépôt Git parent :
+
+```text
+q25/
+├── q25-app/
+├── q25-web/
+└── q25.code-workspace
+```
+
+Chaque projet conserve son historique et son dépôt distant indépendants.
+Le workspace reste local. Depuis l'un des deux dépôts, ouvrir VS Code avec :
+
+```bash
+code ../q25.code-workspace
+```
+
+## Tests du backend
+
 Prérequis : Python 3.12. Le backend standard n'exige aucune dépendance externe.
 Les tests manipulent uniquement des fixtures inventées. Depuis la racine q25-app :
 
