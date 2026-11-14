@@ -54,7 +54,7 @@ class ProvenancePipelineTests(unittest.TestCase):
                 current = replace(snapshot, documents=(reloaded,))
                 self.assertEqual(current.resolve(span), citation)
                 tables = {row[0] for row in db.connection.execute("SELECT name FROM sqlite_master WHERE type='table'")}
-                self.assertEqual(tables, {"documents", "document_elements", "jobs", "audit_events", "schema_migrations", "corpora", "corpus_documents", "citations"})
+                self.assertEqual(tables, {"documents", "document_elements", "jobs", "audit_events", "schema_migrations", "corpora", "corpus_documents", "citations", "purge_operations"})
 
     def test_real_extraction_boundaries_reimport_and_scope(self):
         raw = ("x" * 65535 + "É\r\ne\u0301🦊FIN").encode()

@@ -42,19 +42,17 @@ class DocumentDependencies:
 class RetentionInventory:
     observed_at: datetime
     documents: tuple[DocumentDependencies, ...] = field(repr=False)
+    schema_version: int = 2
 
     def __post_init__(self):
-        if (type(self.observed_at) is not datetime or self.observed_at.tzinfo is not timezone.utc
+        if (type(self.schema_version) is not int or self.schema_version not in (2, 3)
+                or type(self.observed_at) is not datetime or self.observed_at.tzinfo is not timezone.utc
                 or type(self.documents) is not tuple or len(self.documents) > MAX_CANDIDATES
                 or any(type(item) is not DocumentDependencies for item in self.documents)):
             raise BackendError("RETENTION_INVALID")
         ids = tuple(item.document_id for item in self.documents)
         if len(set(ids)) != len(ids):
             raise BackendError("RETENTION_INVALID")
-
-    @property
-    def schema_version(self) -> int:
-        return 2
 
     @property
     def unassessed(self) -> tuple[str, ...]:
@@ -87,14 +85,18 @@ def inventory_retention(database, candidates: tuple[str, ...]) -> RetentionInven
     try:
         connection.execute("BEGIN")
         started = True
-        version = verify_history(connection, default_migrations(), current=True, errors=database.error_types)
-        if version != 2:
+        version = verify_history(connection, default_migrations(), errors=database.error_types)
+        if version not in (2, 3):
             raise BackendError("MIGRATION_VERSION")
         tables = {row[0] for row in connection.execute("SELECT name FROM sqlite_master WHERE type='table'")}
         triggers = {row[0] for row in connection.execute("SELECT name FROM sqlite_master WHERE type='trigger'")}
-        if (tables != {"schema_migrations", "documents", "document_elements", "jobs", "audit_events",
+        expected_tables = {"schema_migrations", "documents", "document_elements", "jobs", "audit_events",
                        "corpora", "corpus_documents", "citations"}
-                or triggers != {"audit_no_update", "audit_no_delete", "job_transition"}
+        expected_triggers = {"audit_no_update", "audit_no_delete", "job_transition"}
+        if version == 3:
+            expected_tables |= {"purge_operations"}
+            expected_triggers |= {"job_purge_guard", "purge_no_update", "purge_no_delete"}
+        if (tables != expected_tables or triggers != expected_triggers
                 or connection.execute("PRAGMA foreign_key_check").fetchall()):
             raise BackendError("RETENTION_INVALID")
         result = []
@@ -109,7 +111,7 @@ def inventory_retention(database, candidates: tuple[str, ...]) -> RetentionInven
                 "SELECT count(*) FROM jobs WHERE document_id=?",
                 "SELECT count(*) FROM audit_events WHERE job_id IN (SELECT id FROM jobs WHERE document_id=?)"))
             result.append(DocumentDependencies(document_id, *counts))
-        return RetentionInventory(datetime.now(timezone.utc), tuple(result))
+        return RetentionInventory(datetime.now(timezone.utc), tuple(result), version)
     except database.error_types:
         raise BackendError("RETENTION_INVALID") from None
     finally:

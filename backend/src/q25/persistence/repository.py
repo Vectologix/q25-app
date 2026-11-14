@@ -22,12 +22,16 @@ class JobResult:
     state: str
     document_id: str | None
     error_code: str | None
+    source_purged: bool = False
 
     def __post_init__(self):
         if not technical_id(self.job_id) or self.state not in ("waiting", "running", *_EVENTS):
             raise BackendError("JOB_STATE")
+        if type(self.source_purged) is not bool or (self.source_purged and self.state != "completed"):
+            raise BackendError("JOB_STATE")
         if self.state == "completed":
-            if not technical_id(self.document_id) or self.error_code is not None:
+            valid_source = self.document_id is None if self.source_purged else technical_id(self.document_id)
+            if not valid_source or self.error_code is not None:
                 raise BackendError("JOB_STATE")
         elif self.document_id is not None:
             raise BackendError("JOB_STATE")
@@ -108,11 +112,12 @@ class DocumentRepository:
     def get_job(self, job_id: str) -> JobResult:
         self.database.ensure_open()
         try:
+            modern = self.database.connection.execute("PRAGMA user_version").fetchone()[0] >= 3
             row = self.database.connection.execute(
-                "SELECT id,state,document_id,error_code FROM jobs WHERE id=?", (job_id,),
+                "SELECT id,state,document_id,error_code" + (",source_purged" if modern else "") + " FROM jobs WHERE id=?", (job_id,),
             ).fetchone()
             if row is None:
                 raise BackendError("JOB_STATE")
-            return JobResult(*row)
+            return JobResult(*row[:4], bool(row[4]) if modern else False)
         except self.database.error_types:
             raise BackendError("STORAGE_FAILURE") from None

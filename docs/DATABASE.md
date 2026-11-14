@@ -160,3 +160,10 @@ décrit le socle initial en mémoire ; sa persistance est désormais réalisée 
 seule du schéma 2. Aucune migration supplémentaire : les admissions, citations,
 jobs et événements d'audit sont inventoriés sans modification ni lecture du texte
 source. Un résultat sans dépendance SQL n'autorise pas la suppression.
+
+## Schéma courant 3 — purge manuelle
+
+Le [lot 2C3B](MANUAL_PURGE.md) ajoute source_purged aux jobs, le code technique
+DOCUMENT_PURGED et purge_operations. Les scripts 001/002 restent inchangés.
+Copies/restaurations 1/2/3 vérifiées ; aucune garantie d'effacement physique.
+Les sections de schéma 1 et 2 ci-dessus décrivent les étapes historiques.

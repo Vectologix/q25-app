@@ -7,6 +7,9 @@ import re
 from typing import Protocol
 
 _MESSAGES = {
+    "PURGE_CONFIRMATION": "Confirmation de purge absente, différente ou déjà consommée.",
+    "PURGE_BLOCKED": "Source encore référencée ou état incompatible avec la purge.",
+    "PURGE_CHANGED": "État différent de la prévisualisation ; préparer de nouveau.",
     "RETENTION_INVALID": "Inventaire de rétention invalide ou incomplet.",
     "RETENTION_DOCUMENT_MISSING": "Candidat absent de la base synthétique.",
     "KEY_REFERENCE_INVALID": "Référence de clé invalide.",

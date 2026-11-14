@@ -5,7 +5,7 @@ import math
 import sqlite3
 import time
 
-from q25.core.documents import BackendError
+from q25.core.documents import BackendError, technical_id
 from q25.persistence.database import Database, configure
 from q25.persistence.migrations import default_migrations, verify_history
 from q25.persistence.repository import JobResult, read_document
@@ -24,12 +24,16 @@ def validate_database(connection: sqlite3.Connection, *, errors=(sqlite3.Error,)
     """Contrôles structurels et sémantiques ; aucune preuve cryptographique d'authenticité."""
     try:
         version = verify_history(connection, default_migrations(), errors=errors)
-        if version not in (1, 2):
+        if version not in (1, 2, 3):
             raise BackendError("BACKUP_INVALID")
         tables = {r[0] for r in connection.execute("SELECT name FROM sqlite_master WHERE type='table'")}
         triggers = {r[0] for r in connection.execute("SELECT name FROM sqlite_master WHERE type='trigger'")}
-        expected_tables = _TABLES | ({"corpora", "corpus_documents", "citations"} if version == 2 else set())
-        if tables != expected_tables or triggers != _TRIGGERS:
+        expected_tables = _TABLES | ({"corpora", "corpus_documents", "citations"} if version >= 2 else set())
+        expected_triggers = set(_TRIGGERS)
+        if version == 3:
+            expected_tables |= {"purge_operations"}
+            expected_triggers |= {"job_purge_guard", "purge_no_update", "purge_no_delete"}
+        if tables != expected_tables or triggers != expected_triggers:
             raise BackendError("BACKUP_INVALID")
         if connection.execute("PRAGMA integrity_check").fetchall() != [("ok",)]:
             raise BackendError("BACKUP_INVALID")
@@ -37,11 +41,24 @@ def validate_database(connection: sqlite3.Connection, *, errors=(sqlite3.Error,)
             raise BackendError("BACKUP_INVALID")
         for (document_id,) in connection.execute("SELECT id FROM documents"):
             read_document(connection, document_id)
-        if version == 2:
+        if version >= 2:
             from q25.persistence.corpus import validate_corpora
             validate_corpora(connection)
-        for row in connection.execute("SELECT id,state,document_id,error_code FROM jobs"):
-            JobResult(*row)
+        query = "SELECT id,state,document_id,error_code" + (",source_purged" if version == 3 else "") + " FROM jobs"
+        for row in connection.execute(query):
+            JobResult(*row[:4], bool(row[4]) if version == 3 else False)
+        if version == 3:
+            for row in connection.execute("SELECT id FROM purge_operations"):
+                if not technical_id(row[0]):
+                    raise BackendError("BACKUP_INVALID")
+            purged = connection.execute("SELECT count(*) FROM jobs WHERE source_purged=1").fetchone()[0]
+            count = connection.execute("SELECT coalesce(sum(jobs),0) FROM purge_operations").fetchone()[0]
+            if purged != count:
+                raise BackendError("BACKUP_INVALID")
+            for job_id, source_purged in connection.execute("SELECT id,source_purged FROM jobs"):
+                events = connection.execute("SELECT count(*) FROM audit_events WHERE job_id=? AND code='DOCUMENT_PURGED'", (job_id,)).fetchone()[0]
+                if events != source_purged:
+                    raise BackendError("BACKUP_INVALID")
     except errors + (BackendError, ValueError, TypeError):
         raise BackendError("BACKUP_INVALID") from None
 
@@ -63,10 +80,13 @@ def _snapshot_rows(connection: sqlite3.Connection) -> tuple:
         "SELECT * FROM jobs ORDER BY id",
         "SELECT * FROM audit_events ORDER BY sequence",
     )
-    if connection.execute("PRAGMA user_version").fetchone()[0] == 2:
+    version = connection.execute("PRAGMA user_version").fetchone()[0]
+    if version >= 2:
         queries += ("SELECT * FROM corpora ORDER BY id",
                     "SELECT * FROM corpus_documents ORDER BY corpus_id,document_id",
                     "SELECT * FROM citations ORDER BY id")
+    if version == 3:
+        queries += ("SELECT * FROM purge_operations ORDER BY id",)
     return tuple(connection.execute(query).fetchall() for query in queries)
 
 

@@ -22,7 +22,7 @@ from q25.persistence.workspace import SyntheticWorkspace
 class CorpusCases:
     encrypted = False
 
-    def make(self, workspace, name="state.db", version=2):
+    def make(self, workspace, name="state.db", version=3):
         path = workspace.path(name)
         workspace.claim_file(path)
         if self.encrypted:
@@ -83,7 +83,7 @@ class CorpusCases:
                     self.assertEqual(_snapshot_rows(reopened.connection), rows)
                     self.assertEqual(CorpusRepository(reopened).get_citation(corpus, "b" * 32).span, span)
                     validate_database(reopened.connection, errors=reopened.error_types)
-            self.assertEqual(len(rows), 8)
+            self.assertEqual(len(rows), 9)
 
     def test_legacy_backup_restores_without_changing_source_then_upgrades(self):
         with SyntheticWorkspace() as w:
@@ -94,7 +94,7 @@ class CorpusCases:
             before = copy.read_bytes()
             restored = self.restore(w, copy, w.path("upgraded.db"))
             with self.reopen(w, restored) as new:
-                self.assertEqual(new.connection.execute("PRAGMA user_version").fetchone()[0], 2)
+                self.assertEqual(new.connection.execute("PRAGMA user_version").fetchone()[0], 3)
                 self.assertEqual(DocumentRepository(new).get_document(result.document_id).text, "fixture É\r\n")
                 migrate(new.connection, errors=new.error_types)
                 with self.assertRaises(BackendError):

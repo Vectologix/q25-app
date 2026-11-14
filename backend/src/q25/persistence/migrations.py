@@ -27,7 +27,7 @@ class Migration:
 
 def default_migrations() -> tuple[Migration, ...]:
     result = []
-    for version, filename in enumerate(("001_initial.sql", "002_corpus_citations.sql"), 1):
+    for version, filename in enumerate(("001_initial.sql", "002_corpus_citations.sql", "003_manual_purge.sql"), 1):
         path = Path(__file__).with_name("migrations") / filename
         try:
             with path.open("rb") as stream:

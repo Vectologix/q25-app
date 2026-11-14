@@ -162,10 +162,10 @@ class CipherPipelineTests(unittest.TestCase):
             db, _, _ = self.populated(workspace)
             with self.assertRaises(BackendError) as error:
                 migrate(db.connection, (*default_migrations(),
-                        Migration(3, "CREATE TABLE probe(x); INSERT INTO absent VALUES(1);")),
+                        Migration(4, "CREATE TABLE probe(x); INSERT INTO absent VALUES(1);")),
                         errors=db.error_types)
             self.assertEqual(error.exception.code, "MIGRATION_INVALID")
-            self.assertEqual(db.connection.execute("PRAGMA user_version").fetchone(), (2,))
+            self.assertEqual(db.connection.execute("PRAGMA user_version").fetchone(), (3,))
             self.assertIsNone(db.connection.execute("SELECT name FROM sqlite_master WHERE name='probe'").fetchone())
             validate_database(db.connection, errors=db.error_types)
 
@@ -174,10 +174,10 @@ class CipherPipelineTests(unittest.TestCase):
             db, _, _ = self.populated(workspace)
             first = default_migrations()[0]
             for migrations in ((replace(first, sql=first.sql + "\n-- modified"), *default_migrations()[1:]),
-                               (*default_migrations(), Migration(3, "CREATE TABLE probe(x); COMMIT;"))):
+                               (*default_migrations(), Migration(4, "CREATE TABLE probe(x); COMMIT;"))):
                 with self.subTest(), self.assertRaises(BackendError):
                     migrate(db.connection, migrations, errors=db.error_types)
-            self.assertEqual(db.connection.execute("PRAGMA user_version").fetchone(), (2,))
+            self.assertEqual(db.connection.execute("PRAGMA user_version").fetchone(), (3,))
             validate_database(db.connection, errors=db.error_types)
 
     def test_future_version_is_refused_and_preserved(self):

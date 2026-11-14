@@ -85,3 +85,11 @@ texte/empreinte sources, comparent lignes et schéma avant/après et vérifient
 l'absence de réseau, processus et journaux. Elles couvrent notamment les sources
 partagées, les retraits successifs, les jobs/audits bloquants et les versions
 refusées sans migration. Les essais du coffre OS ne sont pas activés.
+
+## Évolution avec la purge manuelle
+
+L'inventaire accepte maintenant les schémas 2 et 3 et expose leur version observée.
+Le contrôle d'historique reconnaît exactement ces deux versions, sans les migrer.
+Les blocages jobs/audits restent affichés : seul le [service de purge confirmée](MANUAL_PURGE.md)
+peut les détacher dans sa propre transaction de schéma 3 après validation.
+L'inventaire seul reste sans autorisation d'effacement.
