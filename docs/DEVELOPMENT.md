@@ -49,11 +49,11 @@ que la wheel Linux CPython 3.12 vérifiée. Le marqueur de l'extra
 `cipher-prototype` dans pyproject.toml limite son profil d'installation ; utiliser
 le verrou avec hashes pour reproduire cet essai.
 
-Résultat du lot mémoire du 14 novembre 2026 : 156 tests découverts, 155 réussis
-avec SQLCipher et l'essai OS explicitement ignoré ; sans SQLCipher, 131 réussis
-et 25 ignorés. Les 30 nouveaux tests du MemoryPlanner ne nécessitent aucun paquet.
+Résultat du lot provenance du 14 novembre 2026 : 180 tests découverts, 179 réussis
+avec SQLCipher et l'essai OS explicitement ignoré ; sans SQLCipher, 155 réussis
+et 25 ignorés. Les 24 nouveaux tests de provenance ne nécessitent aucun paquet.
 La preuve de coffre séparée du lot 2B2 reste acquise ; elle n'est pas réexécutée
-pour un changement du planificateur pur.
+pour les contrats de provenance en mémoire.
 Le schéma initial demeure identique. Aucun modèle téléchargé, aucun serveur
 démarré, aucune donnée réelle traitée.
 
@@ -96,3 +96,12 @@ TMPDIR="$PWD/.private/tmp" PYTHONPATH=backend/src .venv/bin/python -m unittest t
 Voir [les contrats et limites du MemoryPlanner](MEMORY_PLANNER.md). Les sondes de
 ce test d'intégration sont simulées ; aucun modèle, benchmark ou GPU réel n'est
 validé par cette commande.
+
+## Tests ciblés de provenance et citations
+
+```bash
+TMPDIR="$PWD/.private/tmp" PYTHONPATH=backend/src python3 -m unittest tests.unit.test_provenance tests.integration.test_provenance_pipeline -v
+```
+
+Voir [PROVENANCE.md](PROVENANCE.md) pour les API, les conventions de positions
+et la revalidation des références après remplacement du corpus courant.

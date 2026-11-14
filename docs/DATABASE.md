@@ -135,3 +135,14 @@ déjà en cours. Les tests locaux ne valident pas le packaging Windows/macOS nat
 
 Le prototype reste réservé aux données fictives ; le lot 2B complet reste partiel.
 Voir la [politique de sécurité](../SECURITY.md) pour les signalements.
+
+
+## Corpus et citations en mémoire — 2C1
+
+`q25.core.provenance` accepte les `ExtractedDocument` déjà extraits ou relus par
+`DocumentRepository`. Il vérifie la portée du corpus, la révision et les plages
+TXT exactes ; aucun champ ni table n'est ajouté au schéma 1. Les tests conservent
+les mêmes références après réouverture d'une base synthétique existante.
+Les corpus et citations ne sont pas encore persistés. Voir [les contrats et
+limites](PROVENANCE.md), notamment l'usage obligatoire du snapshot courant après
+un retrait. Migrations et rétention durable restent une tranche distincte.
