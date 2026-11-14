@@ -37,13 +37,15 @@ dossiers des deux dépôts n'est nécessaire à leur construction.
   sélection prudente avec réserves et repli sans LLM.
 - Extraction TXT UTF-8/BOM, hash et positions, migrations SQLite atomiques,
   tâches, audit minimal, sauvegarde/restauration vérifiées.
-- 126 tests découverts : 125 réussis avec SQLCipher, essai OS ignoré explicitement.
-- Contrats de clés et liaison SQLCipher testés sur doubles ; essai réel de coffre
-  non validé, lancement du helper refusé pour absence de signature PowerShell.
+- 125 tests ordinaires réussis avec SQLCipher ; un essai OS séparé réussi,
+  toujours ignoré par défaut (126 tests distincts validés).
+- Contrats de clés et liaison SQLCipher testés sur doubles ; preuve réelle du
+  coffre Windows depuis WSL, clé fictive supprimée et politique Windows inchangée.
 
 Le prototype documentaire est réservé aux données synthétiques : SQLite standard
 en clair (2A) ou SQLCipher facultatif (2B1), dans des espaces temporaires de tests.
-L'ouverture produit reste refusée ; coffre de clés OS et packaging restent à prouver.
+L’ouverture produit reste refusée ; gestion de clés de production et packaging
+restent à prouver.
 Ni interface, ni détection PII, ni anonymisation, ni chargement de modèle ne sont
 encore livrés. Voir [DATABASE.md](DATABASE.md), [politique de sécurité](../SECURITY.md),
 [MODEL_COMPATIBILITY.md](MODEL_COMPATIBILITY.md) et [BENCHMARKS.md](BENCHMARKS.md).

@@ -50,10 +50,12 @@ que la wheel Linux CPython 3.12 vérifiée. Le marqueur de l'extra
 le verrou avec hashes pour reproduire cet essai.
 
 Résultat du 14 novembre 2026 : avec le moteur, 125 tests réussis et un essai
-OS explicitement ignoré ; sans le moteur, 101 réussis et 25 ignorés. Le schéma initial demeure identique. Aucun modèle téléchargé,
-aucun serveur démarré, aucune donnée réelle traitée.
+OS explicitement ignoré par défaut ; sans le moteur, 101 réussis et 25 ignorés.
+L'essai OS séparé a aussi réussi : 126 tests distincts validés au total.
+Le schéma initial demeure identique. Aucun modèle téléchargé, aucun serveur
+démarré, aucune donnée réelle traitée.
 
-## Fournisseur de clés de test — 2B2 en cours
+## Fournisseur de clés de test — 2B2
 
 Les tests ordinaires n'utilisent jamais le coffre système. Un double uniquement
 présent dans les tests vérifie les références, l'isolation, les erreurs et la
@@ -66,16 +68,19 @@ Il exige `allow_system_store=True`. L'essai natif dans
 est désactivé par défaut ; `Q25_RUN_OS_KEYRING_TESTS=1` active cet essai seulement
 après accord explicite de création/relecture/suppression des clés fictives.
 
-État constaté : Windows refuse le helper PowerShell non signé depuis le chemin
-WSL avec `RemoteSigned`. Aucune clé OS créée ou suppression réelle validée.
-Le parseur PowerShell et la compilation C# ont été vérifiés sans appel de coffre.
+Preuve du 14 novembre 2026 : une clé fictive de 32 octets a été créée et relue
+dans Windows Credential Manager depuis WSL, utilisée pour l'ouverture, la sauvegarde
+et la restauration SQLCipher, puis supprimée. Le helper a confirmé l'absence de
+cette entrée par l'API Windows après suppression. Aucun secret existant adopté.
 
 L'option `allow_unsigned_helper=True` ajoute `-ExecutionPolicy Bypass` uniquement
 au processus enfant, et reste désactivée par défaut. Son utilisation demande un
-accord distinct ; elle n'a pas été exécutée lors de cette livraison. Dans l'essai
-natif, elle correspond à `Q25_ALLOW_UNSIGNED_TEST_HELPER=1`. Aucun réglage permanent
-Windows ni paramètre de stratégie de groupe n'est modifié par cette option.
+accord distinct. Cet accord a été reçu et l'option a été utilisée pour l'essai
+séparé, car `RemoteSigned` refuse le script non signé via le chemin WSL. Elle
+correspond à `Q25_ALLOW_UNSIGNED_TEST_HELPER=1`. La politique a été comparée avant
+et après : `LocalMachine=RemoteSigned`, autres scopes `Undefined`, inchangés.
 
-Le lot coffre reste incomplet tant que l'essai natif et son nettoyage ne sont pas
-prouvés. Aucune prise en charge Windows native distribuée, Linux/macOS, récupération
-après crash ou usage de documents réels ne découle des tests sur doubles.
+Le lot 2B2 est vérifié pour cette preuve synthétique WSL vers Windows. Le test
+reste opt-in et son exception de processus reste désactivée par défaut. Cette
+preuve ne valide pas un exécutable Windows distribué, les coffres Linux/macOS,
+la récupération après crash, la rotation ou un stockage de production.
