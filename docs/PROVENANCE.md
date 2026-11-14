@@ -96,3 +96,9 @@ retrait et corpus étrangers, citations inventées, représentations et erreurs.
 Le trajet TXT vers citation refuse réseau/processus et, après extraction, accès
 fichier. Un autre trajet vérifie la compatibilité avec le dépôt SQLite existant
 après réouverture, sans table ajoutée. Voir [les tests complets](DEVELOPMENT.md).
+
+## Évolution 2C2
+
+Le module décrit ici reste pur. La [couche persistée](PERSISTENT_CORPORA.md)
+réutilise ces contrats et relit les admissions courantes depuis le schéma 2.
+Les exclusions de persistance ci-dessus décrivent le périmètre historique 2C1.

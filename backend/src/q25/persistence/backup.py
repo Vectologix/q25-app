@@ -23,10 +23,13 @@ def _validate_timeout(timeout: float):
 def validate_database(connection: sqlite3.Connection, *, errors=(sqlite3.Error,)):
     """Contrôles structurels et sémantiques ; aucune preuve cryptographique d'authenticité."""
     try:
-        verify_history(connection, default_migrations(), current=True, errors=errors)
+        version = verify_history(connection, default_migrations(), errors=errors)
+        if version not in (1, 2):
+            raise BackendError("BACKUP_INVALID")
         tables = {r[0] for r in connection.execute("SELECT name FROM sqlite_master WHERE type='table'")}
         triggers = {r[0] for r in connection.execute("SELECT name FROM sqlite_master WHERE type='trigger'")}
-        if tables != _TABLES or triggers != _TRIGGERS:
+        expected_tables = _TABLES | ({"corpora", "corpus_documents", "citations"} if version == 2 else set())
+        if tables != expected_tables or triggers != _TRIGGERS:
             raise BackendError("BACKUP_INVALID")
         if connection.execute("PRAGMA integrity_check").fetchall() != [("ok",)]:
             raise BackendError("BACKUP_INVALID")
@@ -34,6 +37,9 @@ def validate_database(connection: sqlite3.Connection, *, errors=(sqlite3.Error,)
             raise BackendError("BACKUP_INVALID")
         for (document_id,) in connection.execute("SELECT id FROM documents"):
             read_document(connection, document_id)
+        if version == 2:
+            from q25.persistence.corpus import validate_corpora
+            validate_corpora(connection)
         for row in connection.execute("SELECT id,state,document_id,error_code FROM jobs"):
             JobResult(*row)
     except errors + (BackendError, ValueError, TypeError):
@@ -57,6 +63,10 @@ def _snapshot_rows(connection: sqlite3.Connection) -> tuple:
         "SELECT * FROM jobs ORDER BY id",
         "SELECT * FROM audit_events ORDER BY sequence",
     )
+    if connection.execute("PRAGMA user_version").fetchone()[0] == 2:
+        queries += ("SELECT * FROM corpora ORDER BY id",
+                    "SELECT * FROM corpus_documents ORDER BY corpus_id,document_id",
+                    "SELECT * FROM citations ORDER BY id")
     return tuple(connection.execute(query).fetchall() for query in queries)
 
 

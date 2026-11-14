@@ -40,8 +40,9 @@ dossiers des deux dépôts n'est nécessaire à leur construction.
 - MemoryPlanner par tâche : contextes et budgets de génération contrôlés sur
   profils synthétiques, sans téléchargement ou chargement de modèle.
 - Corpus explicite et citations TXT en mémoire : révision et positions exactes,
-  refus des extraits inventés ou hors corpus ; schéma SQL inchangé.
-- 179 tests ordinaires réussis avec SQLCipher ; essai OS ignoré par défaut.
+  refus des extraits inventés ou hors corpus.
+- Corpus et références persistés, schéma 2, copies et restauration 1/2 vérifiées.
+- 193 tests ordinaires réussis avec SQLCipher ; essai OS ignoré par défaut.
   La preuve de coffre séparée du 14 novembre reste consignée dans le lot 2B2.
 - Contrats de clés et liaison SQLCipher testés sur doubles ; preuve réelle du
   coffre Windows depuis WSL, clé fictive supprimée et politique Windows inchangée.
@@ -85,3 +86,5 @@ pure ne réserve pas la mémoire et ne remplace pas un futur chargement mesuré.
 
 Ancrages de sources : voir [PROVENANCE.md](PROVENANCE.md), y compris la portée
 logique et la revalidation requise après remplacement du snapshot courant.
+
+Persistance : [corpus et citations](PERSISTENT_CORPORA.md), retrait logique ciblé.

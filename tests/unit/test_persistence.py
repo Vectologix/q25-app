@@ -60,9 +60,9 @@ class MigrationTests(unittest.TestCase):
             target = workspace.path("state.db")
             for _ in range(2):
                 with open_database(target, synthetic_workspace=workspace) as db:
-                    self.assertEqual(db.connection.execute("PRAGMA user_version").fetchone()[0], 1)
+                    self.assertEqual(db.connection.execute("PRAGMA user_version").fetchone()[0], 2)
                     self.assertEqual(db.connection.execute("PRAGMA foreign_keys").fetchone()[0], 1)
-                    self.assertEqual(db.connection.execute("SELECT COUNT(*) FROM schema_migrations").fetchone()[0], 1)
+                    self.assertEqual(db.connection.execute("SELECT COUNT(*) FROM schema_migrations").fetchone()[0], 2)
                     with self.assertRaises(sqlite3.IntegrityError):
                         db.connection.execute("INSERT INTO document_elements VALUES ('missing',0,0,1,0,1,'x')")
 
@@ -87,20 +87,20 @@ class MigrationTests(unittest.TestCase):
     def test_changed_migration_is_refused(self):
         with SyntheticWorkspace() as workspace:
             with open_database(synthetic_workspace=workspace) as db:
-                original, = default_migrations()
+                original = default_migrations()[0]
                 with self.assertRaises(BackendError) as error:
-                    migrate(db.connection, (replace(original, sql=original.sql + "\n-- changed"),))
+                    migrate(db.connection, (replace(original, sql=original.sql + "\n-- changed"), *default_migrations()[1:]))
                 self.assertEqual(error.exception.code, "MIGRATION_HISTORY")
 
     def test_failed_upgrade_rolls_back_all_changes(self):
         with SyntheticWorkspace() as workspace:
             with open_database(synthetic_workspace=workspace) as db:
-                migrations = (*default_migrations(), Migration(2, "CREATE TABLE probe(value); INSERT INTO missing VALUES(1);"))
+                migrations = (*default_migrations(), Migration(3, "CREATE TABLE probe(value); INSERT INTO missing VALUES(1);"))
                 with self.assertRaises(BackendError):
                     migrate(db.connection, migrations)
-                self.assertEqual(db.connection.execute("PRAGMA user_version").fetchone()[0], 1)
+                self.assertEqual(db.connection.execute("PRAGMA user_version").fetchone()[0], 2)
                 self.assertIsNone(db.connection.execute("SELECT name FROM sqlite_master WHERE name='probe'").fetchone())
-                self.assertEqual(db.connection.execute("SELECT COUNT(*) FROM schema_migrations").fetchone()[0], 1)
+                self.assertEqual(db.connection.execute("SELECT COUNT(*) FROM schema_migrations").fetchone()[0], 2)
 
     def test_failed_initial_migration_leaves_no_schema(self):
         connection = sqlite3.connect(":memory:", isolation_level=None)
@@ -117,8 +117,8 @@ class MigrationTests(unittest.TestCase):
             with open_database(synthetic_workspace=workspace) as db:
                 for sql in ("CREATE TABLE probe(value); COMMIT;", "ATTACH ':memory:' AS outside;", "PRAGMA user_version=9;"):
                     with self.subTest(sql=sql), self.assertRaises(BackendError):
-                        migrate(db.connection, (*default_migrations(), Migration(2, sql)))
-                    self.assertEqual(db.connection.execute("PRAGMA user_version").fetchone()[0], 1)
+                        migrate(db.connection, (*default_migrations(), Migration(3, sql)))
+                    self.assertEqual(db.connection.execute("PRAGMA user_version").fetchone()[0], 2)
 
     def test_corrupt_or_unrelated_database_is_refused(self):
         with SyntheticWorkspace() as workspace:

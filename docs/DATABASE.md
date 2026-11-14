@@ -21,7 +21,7 @@ mémoire, `trusted_schema=OFF` et désactive le chargement d'extensions si dispo
 Le choix WAL intervient après vérification/application des migrations ; une base
 de version future ou sans historique reconnu est refusée avant cette mutation.
 
-## Schéma version 1
+## Schéma historique version 1
 
 | Table | Contenu |
 | --- | --- |
@@ -146,3 +146,10 @@ les mêmes références après réouverture d'une base synthétique existante.
 Les corpus et citations ne sont pas encore persistés. Voir [les contrats et
 limites](PROVENANCE.md), notamment l'usage obligatoire du snapshot courant après
 un retrait. Migrations et rétention durable restent une tranche distincte.
+
+## Schéma courant 2 — corpus persistés
+
+La migration 002 ajoute les corpus, admissions et références de citations. Le
+script 001 reste inchangé. Voir [PERSISTENT_CORPORA.md](PERSISTENT_CORPORA.md)
+pour les API, copies 1/2 et limites du retrait logique. La section 2C1 ci-dessus
+décrit le socle initial en mémoire ; sa persistance est désormais réalisée en 2C2.

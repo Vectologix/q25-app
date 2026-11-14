@@ -26,13 +26,16 @@ class Migration:
 
 
 def default_migrations() -> tuple[Migration, ...]:
-    path = Path(__file__).with_name("migrations") / "001_initial.sql"
-    try:
-        with path.open("rb") as stream:
-            raw = stream.read(MAX_MIGRATION_BYTES + 1)
-        return (Migration(1, raw.decode("utf-8")),)
-    except (OSError, UnicodeError):
-        raise BackendError("MIGRATION_INVALID") from None
+    result = []
+    for version, filename in enumerate(("001_initial.sql", "002_corpus_citations.sql"), 1):
+        path = Path(__file__).with_name("migrations") / filename
+        try:
+            with path.open("rb") as stream:
+                raw = stream.read(MAX_MIGRATION_BYTES + 1)
+            result.append(Migration(version, raw.decode("utf-8")))
+        except (OSError, UnicodeError):
+            raise BackendError("MIGRATION_INVALID") from None
+    return tuple(result)
 
 
 def _validate_list(migrations):
